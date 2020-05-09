@@ -9,7 +9,7 @@ import (
 	"practice-golang-gin-webapp/article"
 )
 
-func SetupDb() *gorm.DB {
+func SetupDB() *gorm.DB {
 	viper.AutomaticEnv()
 
 	viperUser := viper.Get("POSTGRES_USER").(string)
@@ -32,6 +32,6 @@ func SetupDb() *gorm.DB {
 }
 
 func SetupRouters(router *gin.Engine) {
-	router.GET("/", article.ShowArticlePage)
+	router.GET("/", article.ShowArticlesPage)
 	router.GET("/article/:article_id", article.GetArticle)
 }

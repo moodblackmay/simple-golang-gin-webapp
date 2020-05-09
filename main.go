@@ -3,13 +3,14 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"practice-golang-gin-webapp/core"
+	"practice-golang-gin-webapp/middlewares"
 )
 
 func main() {
 	router := gin.Default()
 	router.LoadHTMLGlob("templates/*")
 
-	_ = core.SetupDb()
+	router.Use(middlewares.Provide())
 
 	core.SetupRouters(router)
 

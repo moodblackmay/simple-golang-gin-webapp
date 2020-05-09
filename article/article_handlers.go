@@ -2,19 +2,28 @@ package article
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	"net/http"
 )
 
-var articles = []Article{
-	Article{ID: 1, Title: "Article 1", Content: "Article 1 body"},
-	Article{ID: 2, Title: "Article 2", Content: "Article 2 body"},
-}
+func ShowArticlesPage(c *gin.Context) {
+	var articles []Article
+	db := c.MustGet("db").(*gorm.DB)
 
-func ShowArticlePage(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.html", gin.H{"title": "Test", "articles": articles})
+	db.Find(&articles)
+
+	c.HTML(http.StatusOK, "index.html", gin.H{"articles": articles})
 }
 
 func GetArticle(c *gin.Context) {
+	var article Article
 	id := c.Param("article_id")
-	c.HTML(http.StatusOK, "article.html", gin.H{"data": id})
+	db := c.MustGet("db").(*gorm.DB)
+
+	if err := db.Where("id = ?", id).First(&article).Error; err != nil {
+		c.String(http.StatusBadRequest, "Record not found")
+		return
+	}
+
+	c.HTML(http.StatusOK, "article.html", gin.H{"article": article})
 }
