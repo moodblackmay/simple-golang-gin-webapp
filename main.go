@@ -10,6 +10,7 @@ func main() {
 	router := gin.Default()
 	router.LoadHTMLGlob("templates/*")
 
+	//Activate Middlewares
 	router.Use(middlewares.Provide())
 
 	core.SetupRouters(router)

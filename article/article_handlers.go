@@ -21,9 +21,8 @@ func GetArticle(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 
 	if err := db.Where("id = ?", id).First(&article).Error; err != nil {
-		c.String(http.StatusBadRequest, "Record not found")
-		return
+		c.HTML(http.StatusBadRequest, "article.html", gin.H{"error": "Article not found"})
+	} else {
+		c.HTML(http.StatusOK, "article.html", gin.H{"article": article})
 	}
-
-	c.HTML(http.StatusOK, "article.html", gin.H{"article": article})
 }

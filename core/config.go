@@ -7,11 +7,13 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/spf13/viper"
 	"practice-golang-gin-webapp/article"
+	"practice-golang-gin-webapp/user"
 )
 
 func SetupDB() *gorm.DB {
-	viper.AutomaticEnv()
 
+	//Get env variables
+	viper.AutomaticEnv()
 	viperUser := viper.Get("POSTGRES_USER").(string)
 	viperPassword := viper.Get("POSTGRES_PASSWORD").(string)
 	viperHost := viper.Get("POSTGRES_HOST").(string)
@@ -21,12 +23,14 @@ func SetupDB() *gorm.DB {
 	dbArgs := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s",
 		viperHost, viperPort, viperUser, viperDb, viperPassword)
 
+	//Connection to db
 	db, err := gorm.Open("postgres", dbArgs)
 	if err != nil {
 		panic(err)
 	}
 
-	db.AutoMigrate(&article.Article{})
+	//Migration
+	db.AutoMigrate(&article.Article{}, &user.User{})
 
 	return db
 }
@@ -34,4 +38,11 @@ func SetupDB() *gorm.DB {
 func SetupRouters(router *gin.Engine) {
 	router.GET("/", article.ShowArticlesPage)
 	router.GET("/article/:article_id", article.GetArticle)
+
+	userRouter := router.Group("/u")
+	{
+		userRouter.GET("/register", user.ShowRegistrationPage)
+		userRouter.POST("/register", user.Register)
+	}
+
 }

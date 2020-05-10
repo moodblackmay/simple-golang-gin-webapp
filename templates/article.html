@@ -1,4 +1,9 @@
 {{ template "header.html" .}}
+{{if .article}}
     <h1>{{.article.Title}}</h1>
     <p>{{.article.Content}}</p>
+{{end}}
+{{if .error}}
+    <p>{{.error}}</p>
+{{end}}
 {{ template "footer.html" .}}
